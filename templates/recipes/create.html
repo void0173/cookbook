@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Новый рецепт</h1>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <input name="title" class="form-control mb-2" placeholder="Название" required>
+
+  <select name="category_id" class="form-select mb-2" required>
+    <option value="">— Категория —</option>
+    {% for c in categories %}
+      <option value="{{ c.id }}">{{ c.title }}</option>
+    {% endfor %}
+  </select>
+
+  <textarea name="description" class="form-control mb-2" placeholder="Краткое описание"></textarea>
+  <textarea name="ingredients" class="form-control mb-2" placeholder="Ингредиенты" required></textarea>
+  <textarea name="steps" class="form-control mb-2" placeholder="Приготовление" required></textarea>
+
+  <input name="cooking_time" type="number" class="form-control mb-2" value="30" required>
+
+  <select name="difficulty" class="form-select mb-2">
+    <option value="easy">Легко</option>
+    <option value="medium">Средне</option>
+    <option value="hard">Сложно</option>
+  </select>
+
+  <input type="file" name="image" class="form-control mb-3">
+
+  <button class="btn btn-primary">Сохранить</button>
+</form>
+{% endblock %}
