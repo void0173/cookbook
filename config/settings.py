@@ -151,4 +151,5 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+ALLOWED_HOSTS = ['cookbook-1-6ogb.onrender.com', '*']
 
