@@ -43,6 +43,142 @@
     a:hover {
       color: #b45309;
     }
+            <style>
+    /* --- БАЗОВЫЕ НАСТРОЙКИ --- */
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f8f9fa; /* Светло-серый фон, чтобы белые карточки выделялись */
+      color: #333333;
+    }
+
+    h1, h2, h3, h4, h5, .navbar-brand {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: #222222;
+    }
+
+    /* --- ШАПКА (Стекло) --- */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      background-color: rgba(255, 255, 255, 0.85) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 15px 0;
+    }
+
+    /* Текст в шапке */
+    .navbar-brand {
+      color: #d97706 !important; /* Янтарный цвет для логотипа */
+      font-size: 1.6rem;
+    }
+
+    .navbar span.me-2 {
+      color: #555 !important;
+      font-weight: 500;
+    }
+
+    /* --- КНОПКИ --- */
+    /* Кнопка + Рецепт (темная) */
+    .btn-dark {
+      background-color: #333 !important;
+      color: #fff !important;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      padding: 8px 16px;
+      transition: all 0.2s;
+    }
+    .btn-dark:hover {
+      background-color: #000 !important;
+      transform: translateY(-1px);
+    }
+
+    /* Кнопка Выйти (прозрачная с обводкой) */
+    .navbar form button.btn-dark {
+      background-color: transparent !important;
+      color: #333 !important;
+      border: 1px solid #ccc !important;
+    }
+    .navbar form button.btn-dark:hover {
+      background-color: #dc3545 !important; /* Красный при наведении */
+      color: #fff !important;
+      border-color: #dc3545 !important;
+    }
+
+    /* Кнопки фильтров (категории) */
+    .btn-outline-warning {
+      color: #d97706;
+      border-color: #d97706;
+    }
+    .btn-outline-warning:hover {
+      background-color: #d97706;
+      color: #fff;
+    }
+
+    /* --- КАРТОЧКИ РЕЦЕПТОВ --- */
+    .card {
+      border: none;
+      border-radius: 16px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden; /* Чтобы картинки не вылезали за скругленные углы */
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .card h5 a {
+      color: #222 !important;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .card h5 a:hover {
+      color: #d97706 !important;
+    }
+
+    /* Текст внутри карточки */
+    .text-muted {
+      color: #777 !important;
+    }
+
+    /* Рейтинг (звездочка) */
+    .badge.bg-success {
+      background-color: #198754 !important;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    /* --- АНИМАЦИИ --- */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      animation: fadeInUp 0.6s ease-out forwards;
+      opacity: 0;
+    }
+    .col-md-4:nth-child(1) .card { animation-delay: 0.1s; }
+    .col-md-4:nth-child(2) .card { animation-delay: 0.2s; }
+    .col-md-4:nth-child(3) .card { animation-delay: 0.3s; }
+    .col-md-4:nth-child(4) .card { animation-delay: 0.4s; }
+    .col-md-4:nth-child(5) .card { animation-delay: 0.5s; }
+    .col-md-4:nth-child(6) .card { animation-delay: 0.6s; }
+
+    /* Ссылки на странице */
+    a { color: #d97706; text-decoration: none; }
+    a:hover { color: #b45309; text-decoration: underline; }
+
   </style>
 </head>
 <body>
