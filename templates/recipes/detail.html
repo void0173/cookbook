@@ -71,5 +71,57 @@
 {% else %}
   <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
 {% endif %}
+<hr class="my-4">
+<div class="card bg-light border-warning mb-4">
+  <div class="card-body d-flex align-items-center justify-content-between">
+    <div>
+      <h5 class="mb-0"><i class="fas fa-stopwatch text-warning"></i> Таймер готовки</h5>
+      <small class="text-muted">Время по рецепту: {{ recipe.cooking_time }} мин.</small>
+    </div>
+    <div class="text-end">
+      <h3 id="timer-display" class="mb-0 text-dark font-monospace" style="font-weight: bold;">{{ recipe.cooking_time }}:00</h3>
+      <button id="start-timer" class="btn btn-sm btn-warning mt-1">Запустить</button>
+    </div>
+  </div>
+</div>
+<script>
+  let timerInterval;
+  let timeLeft = {{ recipe.cooking_time }} * 60;
+  const display = document.getElementById('timer-display');
+  const btn = document.getElementById('start-timer');
+  let isRunning = false;
 
+  function updateDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    display.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  }
+
+  btn.addEventListener('click', function() {
+    if (isRunning) {
+      clearInterval(timerInterval);
+      btn.textContent = 'Продолжить';
+      btn.classList.replace('btn-danger', 'btn-success');
+      isRunning = false;
+    } else {
+      if (timeLeft <= 0) return;
+      btn.textContent = 'Пауза';
+      btn.classList.replace('btn-warning', 'btn-danger');
+      isRunning = true;
+
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateDisplay();
+        } else {
+          clearInterval(timerInterval);
+          btn.textContent = 'Время вышло!';
+          btn.classList.replace('btn-danger', 'btn-secondary');
+          btn.disabled = true;
+          alert('Время готовки истекло! Проверьте блюдо.');
+        }
+      }, 1000);
+    }
+  });
+</script>
 {% endblock %}
