@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="mb-0">❤️ Мои избранные рецепты</h1>
+  <a href="{% url 'recipe_list' %}" class="btn btn-outline-dark">← Ко всем рецептам</a>
+</div>
+
+<div class="row">
+  {% for fav in favorites %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm border-0">
+        {% if fav.recipe.image %}
+          <img src="{{ fav.recipe.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">
+            <a href="{% url 'recipe_detail' fav.recipe.pk %}" class="text-decoration-none text-dark">{{ fav.recipe.title }}</a>
+          </h5>
+          <p class="text-muted small mb-2">
+            {{ fav.recipe.category.title }} • ⏱ {{ fav.recipe.cooking_time }} мин
+          </p>
+          <p class="card-text">{{ fav.recipe.description|truncatechars:80 }}</p>
+        </div>
+        <div class="card-footer bg-transparent border-0 pb-3">
+          <a href="{% url 'recipe_detail' fav.recipe.pk %}" class="btn btn-warning w-100">Открыть рецепт</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="col-12 text-center py-5">
+      <h3 class="text-muted">У вас пока нет избранных рецептов 😢</h3>
+      <p>Перейдите в <a href="{% url 'recipe_list' %}">список рецептов</a> и добавьте что-нибудь вкусное!</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
