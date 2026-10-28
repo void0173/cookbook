@@ -187,6 +187,7 @@
   <div>
     {% if user.is_authenticated %}
       <a href="{% url 'recipe_create' %}" class="btn btn-sm btn-dark me-2">+ Рецепт</a>
+<a href="{% url 'random_recipe' %}" class="btn btn-sm btn-outline-dark me-2">🎲 Случайный</a>
       <span class="me-2">{{ user.username }}</span>
       <form method="post" action="{% url 'logout' %}" class="d-inline">{% csrf_token %}
         <button class="btn btn-sm btn-dark">Выйти</button>

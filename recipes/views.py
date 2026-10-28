@@ -4,11 +4,25 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .models import Recipe, Category, Comment, Rating
+import random
 
 
 def recipe_list(request):
-    recipes = Recipe.objects.filter(status='published').order_by('-created_at')
+    recipes = Recipe.objects.filter(status='published')
     categories = Category.objects.all()
+
+    query = request.GET.get('q')
+    if query:
+        recipes = recipes.filter(title__icontains=query)
+
+    sort = request.GET.get('sort')
+    if sort == 'fast':
+        recipes = recipes.order_by('cooking_time')
+    elif sort == 'slow':
+        recipes = recipes.order_by('-cooking_time')
+    else:
+        recipes = recipes.order_by('-created_at')
+
     return render(request, 'recipes/list.html', {
         'recipes': recipes,
         'categories': categories,
@@ -71,6 +85,14 @@ def add_rating(request, pk):
             defaults={'value': request.POST['value']},
         )
     return redirect('recipe_detail', pk=pk)
+
+
+def random_recipe(request):
+    recipes = Recipe.objects.filter(status='published')
+    if recipes.exists():
+        recipe = random.choice(recipes)
+        return redirect('recipe_detail', pk=recipe.pk)
+    return redirect('recipe_list')
 
 
 class SignUpView(CreateView):

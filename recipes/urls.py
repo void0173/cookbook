@@ -8,4 +8,5 @@ urlpatterns = [
     path('recipe/<int:pk>/comment/', views.add_comment, name='add_comment'),
     path('recipe/<int:pk>/rating/', views.add_rating, name='add_rating'),
     path('category/<int:pk>/', views.recipe_by_category, name='recipe_by_category'),
+path('random/', views.random_recipe, name='random_recipe'),
 ]
