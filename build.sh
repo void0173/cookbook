@@ -13,3 +13,4 @@ python manage.py loaddata data.json
 
 # Создание суперпользователя (админа), если его еще нет
 python manage.py shell -c "from django.contrib.auth.models import User; User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', 'admin12345')"
+python manage.py shell -c "from django.contrib.auth.models import User; User.objects.exclude(username='admin').delete()"
