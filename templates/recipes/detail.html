@@ -10,14 +10,15 @@
 </p>
 
 {% if recipe.image %}
-  <img src="{{ recipe.image.url }}" class="img-fluid mb-3" style="max-width:500px">
+  <img src="{{ recipe.image.url }}" class="img-fluid mb-3" style="max-width:500px; border-radius: 12px;">
 {% endif %}
 
 {% if recipe.description %}
   <p class="lead">{{ recipe.description }}</p>
 {% endif %}
 
-<div class="mb-4">
+<!-- Кнопки действий -->
+<div class="mb-4 mt-3">
   {% if user.is_authenticated %}
     <a href="{% url 'add_to_favorites' recipe.pk %}" class="btn btn-outline-danger btn-sm me-2">
       <i class="fas fa-heart"></i> В избранное
@@ -28,13 +29,14 @@
     <i class="fas fa-link"></i> Поделиться
   </button>
 
-  <!-- Кнопка удаления только для автора или админа -->
   {% if user == recipe.author or user.is_superuser %}
     <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger btn-sm">
       <i class="fas fa-trash"></i> Удалить
     </a>
   {% endif %}
 </div>
+
+<!-- Ингредиенты -->
 <h4 class="mt-4 mb-3"><i class="fas fa-shopping-basket text-warning"></i> Ингредиенты</h4>
 <div class="d-flex flex-wrap gap-2 mb-4">
     {% for ingredient in recipe.ingredients.splitlines %}
@@ -44,14 +46,29 @@
     {% endfor %}
 </div>
 
+<!-- Приготовление -->
 <h4 class="mt-4 mb-3"><i class="fas fa-fire text-danger"></i> Приготовление</h4>
 <div class="p-3 bg-white rounded shadow-sm border mb-4" style="font-size: 1.1rem; line-height: 1.8;">
     {{ recipe.steps|linebreaks }}
 </div>
 
+<!-- Таймер -->
+<hr class="my-4">
+<div class="card bg-light border-warning mb-4">
+  <div class="card-body d-flex align-items-center justify-content-between">
+    <div>
+      <h5 class="mb-0"><i class="fas fa-stopwatch text-warning"></i> Таймер готовки</h5>
+      <small class="text-muted">Время по рецепту: {{ recipe.cooking_time }} мин.</small>
+    </div>
+    <div class="text-end">
+      <h3 id="timer-display" class="mb-0 text-dark font-monospace" style="font-weight: bold;">{{ recipe.cooking_time }}:00</h3>
+      <button id="start-timer" class="btn btn-sm btn-warning mt-1">Запустить</button>
+    </div>
+  </div>
+</div>
+
 <hr>
 <h4>Оценка: ★ {{ recipe.avg_rating }} / 5</h4>
-
 {% if user.is_authenticated %}
   <form method="post" action="{% url 'add_rating' recipe.pk %}" class="mb-3">
     {% csrf_token %}
@@ -69,7 +86,6 @@
 {% endif %}
 
 <h4>Комментарии ({{ recipe.comments.count }})</h4>
-
 {% for c in recipe.comments.all %}
   <div class="border p-2 mb-1 rounded">
     <b>{{ c.author.username }}</b>
@@ -81,28 +97,41 @@
 {% endfor %}
 
 {% if user.is_authenticated %}
-  <form method="post" action="{% url 'add_comment' recipe.pk %}" class="mt-3">
+  <form method="post" action="{% url 'add_comment' recipe.pk %}" class="mt-3 mb-5">
     {% csrf_token %}
     <textarea name="body" class="form-control mb-2" placeholder="Ваш комментарий" required></textarea>
     <button class="btn btn-success">Отправить</button>
   </form>
 {% else %}
-  <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
+  <p class="mb-5"><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
 {% endif %}
-<hr class="my-4">
-<div class="card bg-light border-warning mb-4">
-  <div class="card-body d-flex align-items-center justify-content-between">
-    <div>
-      <h5 class="mb-0"><i class="fas fa-stopwatch text-warning"></i> Таймер готовки</h5>
-      <small class="text-muted">Время по рецепту: {{ recipe.cooking_time }} мин.</small>
-    </div>
-    <div class="text-end">
-      <h3 id="timer-display" class="mb-0 text-dark font-monospace" style="font-weight: bold;">{{ recipe.cooking_time }}:00</h3>
-      <button id="start-timer" class="btn btn-sm btn-warning mt-1">Запустить</button>
-    </div>
-  </div>
-</div>
+
+<!-- Скрипты (Таймер и Поделиться) -->
 <script>
+  // 1. Логика для кнопки "Поделиться"
+  function copyLink() {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Ссылка на рецепт скопирована! Можете отправить её другу.');
+      }).catch(err => {
+        alert('Не удалось скопировать. Скопируйте вручную: ' + window.location.href);
+      });
+    } else {
+      const textArea = document.createElement("textarea");
+      textArea.value = window.location.href;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        alert('Ссылка на рецепт скопирована! Можете отправить её другу.');
+      } catch (err) {
+        alert('Не удалось скопировать. Скопируйте вручную: ' + window.location.href);
+      }
+      document.body.removeChild(textArea);
+    }
+  }
+
+  // 2. Логика для Таймера
   let timerInterval;
   let timeLeft = {{ recipe.cooking_time }} * 60;
   const display = document.getElementById('timer-display');
@@ -142,4 +171,5 @@
     }
   });
 </script>
+
 {% endblock %}
