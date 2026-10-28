@@ -17,6 +17,16 @@
   <p class="lead">{{ recipe.description }}</p>
 {% endif %}
 
+<div class="mb-4 mt-3">
+  {% if user.is_authenticated %}
+    <a href="{% url 'add_to_favorites' recipe.pk %}" class="btn btn-outline-danger btn-sm me-2">
+      <i class="fas fa-heart"></i> В избранное
+    </a>
+  {% endif %}
+  <button onclick="copyLink()" class="btn btn-outline-dark btn-sm">
+    <i class="fas fa-link"></i> Поделиться
+  </button>
+</div>
 <h4 class="mt-4 mb-3"><i class="fas fa-shopping-basket text-warning"></i> Ингредиенты</h4>
 <div class="d-flex flex-wrap gap-2 mb-4">
     {% for ingredient in recipe.ingredients.splitlines %}
