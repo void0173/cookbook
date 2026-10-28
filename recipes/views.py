@@ -1,10 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
+from django.contrib import messages
 from .models import Recipe, Category, Comment, Rating, Favorite
 import random
+
+
+def is_admin(user):
+    return user.is_superuser or user.is_staff
+
 
 def recipe_list(request):
     recipes = Recipe.objects.filter(status='published')
@@ -21,9 +27,11 @@ def recipe_list(request):
         recipes = recipes.order_by('-created_at')
     return render(request, 'recipes/list.html', {'recipes': recipes, 'categories': categories})
 
+
 def recipe_detail(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
     return render(request, 'recipes/detail.html', {'recipe': recipe})
+
 
 def recipe_by_category(request, pk):
     category = get_object_or_404(Category, pk=pk)
@@ -31,7 +39,8 @@ def recipe_by_category(request, pk):
     categories = Category.objects.all()
     return render(request, 'recipes/list.html', {'recipes': recipes, 'categories': categories, 'current_category': category})
 
-@login_required
+
+@user_passes_test(is_admin, login_url='login')
 def recipe_create(request):
     if request.method == 'POST':
         recipe = Recipe.objects.create(
@@ -48,12 +57,14 @@ def recipe_create(request):
         return redirect('recipe_detail', pk=recipe.pk)
     return render(request, 'recipes/create.html', {'categories': Category.objects.all()})
 
+
 @login_required
 def add_comment(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
     if request.method == 'POST':
         Comment.objects.create(recipe=recipe, author=request.user, body=request.POST['body'])
     return redirect('recipe_detail', pk=pk)
+
 
 @login_required
 def add_rating(request, pk):
@@ -62,6 +73,7 @@ def add_rating(request, pk):
         Rating.objects.update_or_create(recipe=recipe, user=request.user, defaults={'value': request.POST['value']})
     return redirect('recipe_detail', pk=pk)
 
+
 def random_recipe(request):
     recipes = Recipe.objects.filter(status='published')
     if recipes.exists():
@@ -69,16 +81,33 @@ def random_recipe(request):
         return redirect('recipe_detail', pk=recipe.pk)
     return redirect('recipe_list')
 
+
 @login_required
 def add_to_favorites(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
     Favorite.objects.get_or_create(user=request.user, recipe=recipe)
     return redirect('recipe_detail', pk=pk)
 
+
 @login_required
 def favorites_list(request):
     favorites = Favorite.objects.filter(user=request.user).select_related('recipe')
     return render(request, 'recipes/favorites.html', {'favorites': favorites})
+
+
+@login_required
+def recipe_delete(request, pk):
+    recipe = get_object_or_404(Recipe, pk=pk)
+    if request.user == recipe.author or request.user.is_superuser:
+        if request.method == 'POST':
+            recipe.delete()
+            messages.success(request, 'Рецепт успешно удален!')
+            return redirect('recipe_list')
+        return render(request, 'recipes/recipe_confirm_delete.html', {'recipe': recipe})
+    else:
+        messages.error(request, 'У вас нет прав на удаление этого рецепта.')
+        return redirect('recipe_detail', pk=pk)
+
 
 class SignUpView(CreateView):
     form_class = UserCreationForm

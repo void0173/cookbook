@@ -17,15 +17,23 @@
   <p class="lead">{{ recipe.description }}</p>
 {% endif %}
 
-<div class="mb-4 mt-3">
+<div class="mb-4">
   {% if user.is_authenticated %}
     <a href="{% url 'add_to_favorites' recipe.pk %}" class="btn btn-outline-danger btn-sm me-2">
       <i class="fas fa-heart"></i> В избранное
     </a>
   {% endif %}
-  <button onclick="copyLink()" class="btn btn-outline-dark btn-sm">
+
+  <button onclick="copyLink()" class="btn btn-outline-dark btn-sm me-2">
     <i class="fas fa-link"></i> Поделиться
   </button>
+
+  <!-- Кнопка удаления только для автора или админа -->
+  {% if user == recipe.author or user.is_superuser %}
+    <a href="{% url 'recipe_delete' recipe.pk %}" class="btn btn-outline-danger btn-sm">
+      <i class="fas fa-trash"></i> Удалить
+    </a>
+  {% endif %}
 </div>
 <h4 class="mt-4 mb-3"><i class="fas fa-shopping-basket text-warning"></i> Ингредиенты</h4>
 <div class="d-flex flex-wrap gap-2 mb-4">
