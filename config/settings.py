@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-1x3^l!h^4-m#5yjt+i#@4p)60id#!gb=!!zrr_#kn8!4^@qsgm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['cookbook-r9lx.onrender.com', '*']
+ALLOWED_HOSTS = ['cookbook-r9lx.onrender.com', 'cookbook-1-6ogb.onrender.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
