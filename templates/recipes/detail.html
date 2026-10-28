@@ -17,11 +17,19 @@
   <p class="lead">{{ recipe.description }}</p>
 {% endif %}
 
-<h4>Ингредиенты</h4>
-<p>{{ recipe.ingredients|linebreaks }}</p>
+<h4 class="mt-4 mb-3"><i class="fas fa-shopping-basket text-warning"></i> Ингредиенты</h4>
+<div class="d-flex flex-wrap gap-2 mb-4">
+    {% for ingredient in recipe.ingredients.splitlines %}
+        {% if ingredient %}
+            <span class="badge bg-light text-dark border p-2 fs-6 shadow-sm">{{ ingredient }}</span>
+        {% endif %}
+    {% endfor %}
+</div>
 
-<h4>Приготовление</h4>
-<p>{{ recipe.steps|linebreaks }}</p>
+<h4 class="mt-4 mb-3"><i class="fas fa-fire text-danger"></i> Приготовление</h4>
+<div class="p-3 bg-white rounded shadow-sm border mb-4" style="font-size: 1.1rem; line-height: 1.8;">
+    {{ recipe.steps|linebreaks }}
+</div>
 
 <hr>
 <h4>Оценка: ★ {{ recipe.avg_rating }} / 5</h4>
