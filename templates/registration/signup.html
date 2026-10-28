@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-5">
+    <div class="card shadow-lg border-0 rounded-4">
+      <div class="card-body p-5">
+        <h2 class="text-center mb-4" style="font-family: 'Playfair Display', serif;">Регистрация</h2>
+
+        <form method="post">
+          {% csrf_token %}
+
+          {% if form.errors %}
+            <div class="alert alert-danger">
+              Пожалуйста, исправьте ошибки ниже.
+            </div>
+          {% endif %}
+
+          <div class="mb-3">
+            <label class="form-label">Имя пользователя</label>
+            <input type="text" name="username" class="form-control" required>
+            <div class="form-text">Обязательно. 150 символов или меньше. Только буквы, цифры и @/./+/-/_ </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Пароль</label>
+            <input type="password" name="password1" class="form-control" required>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Подтверждение пароля</label>
+            <input type="password" name="password2" class="form-control" required>
+          </div>
+
+          <button type="submit" class="btn btn-warning w-100 py-2 fs-5">Создать аккаунт</button>
+        </form>
+
+        <p class="text-center mt-3 mb-0">
+          Уже есть аккаунт? <a href="{% url 'login' %}" class="text-decoration-none">Войти</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

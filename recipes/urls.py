@@ -11,4 +11,5 @@ urlpatterns = [
 path('random/', views.random_recipe, name='random_recipe'),
     path('favorites/', views.favorites_list, name='favorites_list'),
     path('recipe/<int:pk>/favorite/', views.add_to_favorites, name='add_to_favorites'),
+path('signup/', views.SignUpView.as_view(), name='signup'),
 ]
