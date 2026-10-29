@@ -35,6 +35,7 @@ class Recipe(models.Model):
     image = models.ImageField('Фото', upload_to='recipes/', blank=True, null=True)
     status = models.CharField('Статус', max_length=10, choices=STATUS, default='published')
     created_at = models.DateTimeField('Создано', auto_now_add=True)
+    views = models.IntegerField('Просмотры', default=0)  # <--- НОВОЕ ПОЛЕ
 
     class Meta:
         verbose_name = 'Рецепт'

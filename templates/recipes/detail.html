@@ -6,7 +6,8 @@
 <h1 class="mt-2">{{ recipe.title }}</h1>
 <p class="text-muted">
   {{ recipe.category.title }} • ⏱ {{ recipe.cooking_time }} мин •
-  {{ recipe.get_difficulty_display }} • Автор: {{ recipe.author.username }}
+  {{ recipe.get_difficulty_display }} • Автор: {{ recipe.author.username }} •
+  👁 {{ recipe.views }} просмотров
 </p>
 
 {% if recipe.image %}
@@ -25,9 +26,12 @@
     </a>
   {% endif %}
 
-  <!-- Кнопка Поделиться в ВК -->
   <button onclick="shareVK()" class="btn btn-outline-primary btn-sm me-2">
     <i class="fab fa-vk"></i> Поделиться в ВК
+  </button>
+
+  <button onclick="copyLink()" class="btn btn-outline-dark btn-sm me-2">
+    <i class="fas fa-link"></i> Скопировать ссылку
   </button>
 
   {% if user == recipe.author or user.is_superuser %}
@@ -107,7 +111,28 @@
   <p class="mb-5"><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
 {% endif %}
 
-<!-- Скрипты (Таймер и Поделиться в ВК) -->
+<!-- Похожие рецепты -->
+<hr class="my-5">
+<h3 class="mb-4">Похожие рецепты</h3>
+<div class="row mb-5">
+  {% for sim in similar_recipes %}
+    <div class="col-md-4 mb-3">
+      <div class="card h-100 shadow-sm border-0">
+        {% if sim.image %}
+          <img src="{{ sim.image.url }}" class="card-img-top" style="height:150px;object-fit:cover;">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title"><a href="{% url 'recipe_detail' sim.pk %}" class="text-decoration-none text-dark">{{ sim.title }}</a></h5>
+          <p class="text-muted small mb-0">⏱ {{ sim.cooking_time }} мин</p>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-muted">Похожих рецептов пока нет.</p>
+  {% endfor %}
+</div>
+
+<!-- Скрипты (Таймер и Поделиться) -->
 <script>
   // 1. Логика для кнопки "Поделиться в ВК"
   function shareVK() {
@@ -116,7 +141,30 @@
     window.open('https://vk.com/share.php?url=' + url + '&title=' + title, '_blank', 'width=600,height=400');
   }
 
-  // 2. Логика для Таймера
+  // 2. Логика для кнопки "Скопировать ссылку"
+  function copyLink() {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Ссылка на рецепт скопирована!');
+      }).catch(err => {
+        alert('Не удалось скопировать. Скопируйте вручную: ' + window.location.href);
+      });
+    } else {
+      const textArea = document.createElement("textarea");
+      textArea.value = window.location.href;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        alert('Ссылка на рецепт скопирована!');
+      } catch (err) {
+        alert('Не удалось скопировать. Скопируйте вручную: ' + window.location.href);
+      }
+      document.body.removeChild(textArea);
+    }
+  }
+
+  // 3. Логика для Таймера
   let timerInterval;
   let timeLeft = {{ recipe.cooking_time }} * 60;
   const display = document.getElementById('timer-display');

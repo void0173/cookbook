@@ -30,14 +30,26 @@ def recipe_list(request):
 
 def recipe_detail(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
-    return render(request, 'recipes/detail.html', {'recipe': recipe})
+
+    # Увеличиваем счетчик просмотров
+    recipe.views += 1
+    recipe.save()
+
+    # Ищем похожие рецепты (та же категория, кроме текущего)
+    similar_recipes = Recipe.objects.filter(category=recipe.category, status='published').exclude(pk=recipe.pk)[:3]
+
+    return render(request, 'recipes/detail.html', {
+        'recipe': recipe,
+        'similar_recipes': similar_recipes
+    })
 
 
 def recipe_by_category(request, pk):
     category = get_object_or_404(Category, pk=pk)
     recipes = Recipe.objects.filter(category=category, status='published')
     categories = Category.objects.all()
-    return render(request, 'recipes/list.html', {'recipes': recipes, 'categories': categories, 'current_category': category})
+    return render(request, 'recipes/list.html',
+                  {'recipes': recipes, 'categories': categories, 'current_category': category})
 
 
 @user_passes_test(is_admin, login_url='login')
