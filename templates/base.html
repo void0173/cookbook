@@ -8,19 +8,24 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <!-- Подключаем Libre Franklin для текста и Playfair Display для заголовков -->
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
   <style>
+    /* --- БАЗОВЫЕ НАСТРОЙКИ --- */
     body {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Libre Franklin', sans-serif; /* Новый шрифт */
       background-color: #f8f9fa;
       color: #333333;
     }
+
     h1, h2, h3, h4, h5, .navbar-brand {
       font-family: 'Playfair Display', serif;
       font-weight: 700;
       color: #222222;
     }
+
+    /* --- ШАПКА (Стекло) --- */
     .navbar {
       position: sticky;
       top: 0;
@@ -30,14 +35,18 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
       padding: 15px 0;
     }
+
     .navbar-brand {
       color: #d97706 !important;
       font-size: 1.6rem;
     }
+
     .navbar span.me-2 {
       color: #555 !important;
       font-weight: 500;
     }
+
+    /* --- КНОПКИ --- */
     .btn-dark {
       background-color: #333 !important;
       color: #fff !important;
@@ -51,11 +60,14 @@
       background-color: #000 !important;
       transform: translateY(-1px);
     }
+
     .btn-outline-dark {
       border-radius: 8px;
       padding: 8px 16px;
       transition: all 0.2s;
     }
+
+    /* Кнопка Выйти */
     .navbar form button.btn-dark {
       background-color: transparent !important;
       color: #333 !important;
@@ -66,6 +78,8 @@
       color: #fff !important;
       border-color: #dc3545 !important;
     }
+
+    /* --- КАРТОЧКИ РЕЦЕПТОВ --- */
     .card {
       border: none;
       border-radius: 16px;
@@ -74,28 +88,36 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
     }
+
     .card:hover {
       transform: translateY(-6px);
       box-shadow: 0 12px 25px rgba(0,0,0,0.1);
     }
+
     .card-body { padding: 1.5rem; }
+
     .card h5 a {
       color: #222 !important;
       text-decoration: none;
       transition: color 0.2s;
     }
     .card h5 a:hover { color: #d97706 !important; }
+
     .text-muted { color: #777 !important; }
+
     .badge.bg-success {
       background-color: #198754 !important;
       padding: 6px 10px;
       border-radius: 8px;
       font-size: 0.9rem;
     }
+
+    /* --- АНИМАЦИИ КАРТОЧЕК --- */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     .card {
       animation: fadeInUp 0.6s ease-out forwards;
       opacity: 0;
@@ -106,8 +128,26 @@
     .col-md-4:nth-child(4) .card { animation-delay: 0.4s; }
     .col-md-4:nth-child(5) .card { animation-delay: 0.5s; }
     .col-md-4:nth-child(6) .card { animation-delay: 0.6s; }
+
+    /* Ссылки на странице */
     a { color: #d97706; text-decoration: none; }
     a:hover { color: #b45309; text-decoration: underline; }
+
+    /* Кнопка Наверх */
+    #scrollTopBtn {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: all 0.3s;
+    }
+    #scrollTopBtn:hover { transform: scale(1.1); }
   </style>
 </head>
 <body>
@@ -142,5 +182,24 @@
 <div class="container">
   {% block content %}{% endblock %}
 </div>
+
+<!-- Кнопка Наверх -->
+<button id="scrollTopBtn" class="btn btn-warning" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+<script>
+  // Логика для кнопки "Наверх"
+  window.onscroll = function() {
+    const btn = document.getElementById("scrollTopBtn");
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+      btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
+  };
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
 </body>
 </html>
